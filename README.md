@@ -1,6 +1,6 @@
 # Discord-Bot
 
-Le bot est toujours en cours de construction.
+Le bot est utilisé régulièrement sur mon serveur et souvent mis à jour.
 
 ### Les commandes disponibles pour le moment :
 
