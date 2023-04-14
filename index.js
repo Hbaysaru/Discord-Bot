@@ -1,10 +1,12 @@
-const fs = require('fs');
-const { Client, Collection, Intents, Message, } = require('discord.js');
 const { token } = require('./config.json');
 const db = require('quick.db');
 const { VoiceManager } = require('discord-voice');
+const birthdaysjs = require("./birthdays.js");
 
 const handleCommand = require('./helpers/command');
+const deployCommands = require('./deploy-commands');
+
+deployCommands();
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_INVITES, Intents.FLAGS.GUILD_VOICE_STATES]});
 const manager = new VoiceManager (client, {
@@ -31,6 +33,11 @@ for (const file of commandFiles) {
 
 client.once('ready', () => {
 	console.log('Ready!');
+	const bdays = require("./db/bdays.json");
+	
+	Object.values(bdays).forEach(bday => {
+		birthdaysjs.scheduleBday(bday.day, bday.month, bday.year, bday.id, bday.channelID, client);
+	});
 });
 
 client.on('interactionCreate', async interaction => {
@@ -39,7 +46,6 @@ client.on('interactionCreate', async interaction => {
 
 client.on('messageCreate', message => {
 	db.add(`guildMessages_${message.author.id}`, 1);
-	// Penser à changer la database pour sauvegarder données quand le bot est éteint ?
 });
 
 client.on('guildMemberAdd', member => {
